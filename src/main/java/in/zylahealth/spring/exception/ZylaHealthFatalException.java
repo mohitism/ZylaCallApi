@@ -11,9 +11,9 @@
 package in.zylahealth.spring.exception;
 
 /**
- * The Class NovopayFatalException.
+ * The Class ZylaHealthFatalException.
  */
-public class ZylaHealthFatalException extends Exception implements ZylaHealthException {
+public class ZylaHealthFatalException extends RuntimeException implements ZylaHealthException {
 	
 	/**
 	 * 

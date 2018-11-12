@@ -1,6 +1,7 @@
 package in.zylaheath.spring.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,12 @@ public class PhoneDirectotyDAOService {
 	public PhoneDirectoryEntity save(PhoneDirectoryEntity phoneNumberEntity) {
 		// TODO Auto-generated method stub
 		return phoneDirectoryRepository.save(phoneNumberEntity);
+	}
+
+	
+	public PhoneDirectoryEntity findInactivePhoneNumber() {
+		// TODO Auto-generated method stub
+		return phoneDirectoryRepository.findInactivePhoneNumber();
 	}
 	
 	

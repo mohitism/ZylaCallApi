@@ -19,11 +19,9 @@ public class PhoneDirectoryEntity {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	
-	private String name;
-	
 	private String phoneNumber;
 	
-	private String status;
+	private Integer status;
 	
 	
 	private Date statusChangedOn;
@@ -44,16 +42,10 @@ public class PhoneDirectoryEntity {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 	public Date getStatusChangedOn() {

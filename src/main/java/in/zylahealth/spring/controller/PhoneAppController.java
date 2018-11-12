@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.annotation.PostConstruct;
 import javax.swing.text.html.FormSubmitEvent.MethodType;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import in.zylahealth.spring.constants.PhoneNumberDetails;
+import in.zylahealth.spring.constants.PhoneNumberStatusEnum;
 import in.zylahealth.spring.constants.PhoneNumberConstants;
 import in.zylahealth.spring.exception.ZylaHealthFatalException;
 import in.zylahealth.spring.exception.ZylaHealthNonFatalException;
@@ -53,41 +55,63 @@ public class PhoneAppController {
 			throw new ZylaHealthNonFatalException("200","User Not present");
 		}
 		
+		
 		if(preferredContact != null && !preferredContact.isEmpty()) {
-			if(phoneDirectoryDAOService.findByPhoneNumber(preferredContact)==null)
-			{
-				PhoneDirectoryEntity phoneNumberEntity = getPhoneDirectoryEntity(personName,preferredContact);
-				phoneNumberEntity = phoneDirectoryDAOService.save(phoneNumberEntity);
-				return new PhoneNumberDetails(personName,"India",preferredContact);
-			}
-			else {
-				String contactString = generateRandomNumber();
-				while(phoneDirectoryDAOService.findByPhoneNumber(contactString)!=null) {
-					 contactString = generateRandomNumber();
+			
+			PhoneDirectoryEntity preferredPhoneNumberEntity = this.phoneDirectoryDAOService.findByPhoneNumber(preferredContact);
+			if(preferredPhoneNumberEntity!=null) {
+				if(preferredPhoneNumberEntity.getStatus() != PhoneNumberStatusEnum.ACTIVE.getValue())
+				{
+					preferredPhoneNumberEntity.setStatus(PhoneNumberStatusEnum.ACTIVE.getValue());
+					this.phoneDirectoryDAOService.save(preferredPhoneNumberEntity);
+					return new PhoneNumberDetails(personName,"India",preferredContact);
+					}
+				else {
+		
+					PhoneDirectoryEntity inactivePhoneNumberEntity = this.phoneDirectoryDAOService.findInactivePhoneNumber();
+					
+					if(inactivePhoneNumberEntity!=null) {
+						
+						inactivePhoneNumberEntity.setStatus(PhoneNumberStatusEnum.ACTIVE.getValue());
+						this.phoneDirectoryDAOService.save(inactivePhoneNumberEntity);
+						return new PhoneNumberDetails(personName,"India",inactivePhoneNumberEntity.getPhoneNumber());
+					}else {
+						throw new ZylaHealthFatalException("200","Phone Numbers List Exhausted");
+					}
+					
 				}
-				PhoneDirectoryEntity phoneNumberEntity = getPhoneDirectoryEntity(personName,contactString);
+			}else {
+				PhoneDirectoryEntity inactivePhoneNumberEntity = this.phoneDirectoryDAOService.findInactivePhoneNumber();
 				
-				phoneNumberEntity = phoneDirectoryDAOService.save(phoneNumberEntity);
-				return new PhoneNumberDetails(personName,"India",contactString);
-				
+				if(inactivePhoneNumberEntity!=null) {
+					
+					inactivePhoneNumberEntity.setStatus(PhoneNumberStatusEnum.ACTIVE.getValue());
+					this.phoneDirectoryDAOService.save(inactivePhoneNumberEntity);
+					return new PhoneNumberDetails(personName,"India",inactivePhoneNumberEntity.getPhoneNumber());
+				}else {
+					throw new ZylaHealthFatalException("200","Phone Numbers List Exhausted");
+				}
 			}
 		}
 		else
 		{
-			String contactString = generateRandomNumber();
-			while(phoneDirectoryDAOService.findByPhoneNumber(contactString)!=null) {
-				 contactString = generateRandomNumber();
+			PhoneDirectoryEntity inactivePhoneNumberEntity = this.phoneDirectoryDAOService.findInactivePhoneNumber();
+			
+			if(inactivePhoneNumberEntity!=null) {
+				
+				inactivePhoneNumberEntity.setStatus(PhoneNumberStatusEnum.ACTIVE.getValue());
+				this.phoneDirectoryDAOService.save(inactivePhoneNumberEntity);
+				return new PhoneNumberDetails(personName,"India",inactivePhoneNumberEntity.getPhoneNumber());
+			}else {
+				throw new ZylaHealthFatalException("200","Phone Numbers List Exhausted");
 			}
-			PhoneDirectoryEntity phoneNumberEntity = getPhoneDirectoryEntity(personName,contactString);
-			phoneNumberEntity = phoneDirectoryDAOService.save(phoneNumberEntity);
-			return new PhoneNumberDetails(personName,"India",contactString);
 		}
 		
 	}
 
-	private String generateRandomNumber() {
-		Long num = new RandomDataGenerator().nextLong(1111111111L, 9999999999L);;
-		return num.toString();
+/*	private String generateRandomNumber() {
+		number++;
+		return String.valueOf(number);
 	}
 
 	private String AppendZeroestoContact(Long contact) {
@@ -106,12 +130,11 @@ public class PhoneAppController {
 		return sb.toString();
 	}
 	
-	private PhoneDirectoryEntity getPhoneDirectoryEntity(String personName,String contactString) {
+	private PhoneDirectoryEntity getPhoneDirectoryEntity(String contactString) {
 		PhoneDirectoryEntity phoneNumberEntity = new PhoneDirectoryEntity();
-		phoneNumberEntity.setName(personName);
 		phoneNumberEntity.setPhoneNumber(contactString);
 		Date now = new Date();
-		phoneNumberEntity.setStatus("ACTIVE");
+		phoneNumberEntity.setStatus(PhoneNumberStatusEnum.ACTIVE.getValue());
 		phoneNumberEntity.setStatusChangedOn(now);
 		phoneNumberEntity.setStatusChangedRemarks(" ");// TODO
 
@@ -121,5 +144,6 @@ public class PhoneAppController {
 		phoneNumberEntity.setUpdatedBy("");
 		return phoneNumberEntity;
 	}
+	*/
 
 }

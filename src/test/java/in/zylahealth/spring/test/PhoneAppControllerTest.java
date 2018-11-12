@@ -41,7 +41,6 @@ public class PhoneAppControllerTest {
 		String phoneNumber = null;
 		PhoneDirectoryEntity phone = new PhoneDirectoryEntity();
 		PhoneDirectoryEntity phoneDirectoryEntity = new PhoneDirectoryEntity();
-		phoneDirectoryEntity.setName("mohit");
 		phoneDirectoryEntity.setPhoneNumber("8674806691");
 		when(phoneDirectotyDAOService.findByPhoneNumber(phoneNumber)).thenReturn(phoneDirectoryEntity);
 		when(phoneDirectotyDAOService.save(phone)).thenReturn(phoneDirectoryEntity);
@@ -61,7 +60,6 @@ public class PhoneAppControllerTest {
 		String phoneNumber = null;
 		PhoneDirectoryEntity phone = new PhoneDirectoryEntity();
 		PhoneDirectoryEntity phoneDirectoryEntity = new PhoneDirectoryEntity();
-		phoneDirectoryEntity.setName("mohit");
 		phoneDirectoryEntity.setPhoneNumber("3445567867");
 		when(phoneDirectotyDAOService.findByPhoneNumber(phoneNumber)).thenReturn(phoneDirectoryEntity);
 		when(phoneDirectotyDAOService.save(phone)).thenReturn(phoneDirectoryEntity);
